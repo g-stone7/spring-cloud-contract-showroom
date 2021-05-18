@@ -1,0 +1,9 @@
+description: Not given a year it returns a bad request error
+name: shouldReturnBadRequestWhenRequestParamMissing
+request:
+  method: GET
+  url: /leap-year
+  headers:
+    Content-Type: application/json
+response:
+  status: 400

@@ -1,0 +1,25 @@
+description: Given a year it returns the leap year information for that year
+name: shouldReturnLeapYearInfo
+request:
+  method: GET
+  url: /leap-year
+  headers:
+    Content-Type: application/json
+  queryParameters:
+    year: 2020
+  matchers:
+    queryParameters:
+    - key: year
+      type: matching
+      value: "(\\d)+"
+response:
+  status: 200
+  body:
+    leap: true
+  matchers:
+    body:
+      - path: $.['leap']
+        type: by_type
+        value: any_boolean
+  headers:
+    Content-Type: application/json

@@ -1,0 +1,68 @@
+import org.springframework.cloud.contract.verifier.config.TestFramework
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.springframework.cloud:spring-cloud-contract-gradle-plugin:3.0.2'
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.4.5'
+    id "org.springframework.cloud.contract" version "3.0.2"
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'maven-publish'
+    id 'java'
+}
+
+group = 'com.adesso.contract'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+ext {
+    set('springCloudVersion', "2020.0.2")
+    contractsDir = file("mappings")
+    stubsOutputDirRoot = file("${project.buildDir}/production/${project.name}-stubs/")
+}
+
+publishing {
+    publications {
+        stubs(MavenPublication) {
+            artifactId "${project.name}"
+            artifact verifierStubsJar
+        }
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+contracts {
+    testFramework = TestFramework.JUNIT5
+    baseClassForTests = 'com.adesso.contract.producer.BaseTestClass'
+}
+
+contractTest {
+    useJUnitPlatform()
+}
+
+test {
+    useJUnitPlatform()
+}
